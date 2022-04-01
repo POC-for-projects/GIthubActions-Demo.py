@@ -1,0 +1,20 @@
+name: Python application
+
+on:
+  push:
+   branches: [ main ]
+  pull_request:
+    branches: [ main ]
+      
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build & Push Image
+      run: |
+        echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login -u "cfdevsecopsdemo" --password-stdin
+        docker image build -t cfdevsecopsdemo/gitaction:latest .
+        docker push cfdevsecopsdemo/gitaction:latest
