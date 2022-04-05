@@ -13,8 +13,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Build & Push Image
-      run: |
-        echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login argocd.jfrog.io -u "davixam393@procowork.com" --password-stdin
-        docker image build -t argocd.jfrog.io/java-docker/java-gitaction:latest .
-        docker push argocd.jfrog.io/java-docker/java-gitaction:latest
+    - name: Build and Push to artifactory
+#       run: |
+#         echo "${{ secrets.DOCKER_PASSWORD }}" | docker login argocd.jfrog.io -u "davixam393@procowork.com" --password-stdin
+#         docker image build -t argocd.jfrog.io/python-docker/sample-flask:latest .
+#         docker push argocd.jfrog.io/python-docker/sample-flask:latest
+    - uses: actions/checkout@v2
+      name: Check out code
+    - uses: mr-smithers-excellent/docker-build-push@v5
+      name: Build & push Docker image
+      with:
+        image: python-docker/python-app
+        tags: v1, latest
+        registry: argocd.jfrog.io
+        dockerfile: Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
